@@ -2,12 +2,13 @@
 {
     'use strict';
 
-    function SwipeSideNav($swipe, $timeout)
+    function SwipeNavDrawer($swipe, $timeout)
     {
         return {
             restrict: 'A',
             scope: {
-                swipeSideNavEdge: '@'
+                swipeNavDrawerEdge: '@',
+                swipeNavDrawerControl: '='
             },
             link: function (scope, elem)
             {
@@ -17,14 +18,14 @@
                 var timeoutDelay = 300;
                 var animationDelay = 200;
 
-                function showNav()
+                function showDrawer()
                 {
                     elem.css({transform: 'translateX(0px)'});
                     dragTarget.css({opacity: 1});
                     menuVisible = true;
                 }
 
-                function hideNav()
+                function hideDrawer()
                 {
                     elem.css({
                         transform: 'translateX(-100%)',
@@ -40,6 +41,44 @@
                     menuVisible = false;
                 }
 
+                function start()
+                {
+                    elem.css({'will-change': 'transform'});
+                    dragTarget.css({
+                        width: '100%',
+                        'will-change': 'opacity'
+                    });
+                    body.css({overflow: 'hidden'});
+                }
+
+                function end(x)
+                {
+                    elem.css({transition: 'transform ' + animationDelay + 'ms, box-shadow ' + animationDelay + 'ms'});
+                    dragTarget.css({transition: 'opacity ' + animationDelay + 'ms'});
+
+                    (menuWidth / 2) < x ? showDrawer() : hideDrawer();
+
+                    $timeout(function ()
+                    {
+                        var cleanUp = {
+                            transition: '',
+                            'will-change': ''
+                        };
+
+                        elem.css(cleanUp);
+                        dragTarget.css(cleanUp);
+                    }, timeoutDelay)
+                }
+
+                function toggleDrawer()
+                {
+                    start();
+                    elem.css({'box-shadow': '-2px 0 10px'});
+                    menuVisible ? end(0) : end(menuWidth);
+                }
+
+                scope.swipeNavDrawerControl = {toggle: toggleDrawer};
+
                 var body = elem.closest("body");
                 var dragTarget = angular.element('<div class="drag-target"></div>');
                 elem.parent().append(dragTarget);
@@ -47,61 +86,54 @@
                 elem.css({
                     transform: 'translateX(-100%)',
                     'overflow-y': 'scroll',
-                    height: '100%',
+                    height: 'calc(100% + 60px)',
+                    'padding-bottom': '60px',
                     position: 'fixed',
                     top: 0,
-                    'z-index': 999
+                    'z-index': 9999
                 });
+
                 dragTarget.css({
                     background: 'rgba(0, 0, 0, .5)',
                     width: dragTargetWidth,
-                    height: '100%',
+                    height: 'calc(100% + 60px)',
+                    'padding-bottom': '60px',
                     opacity: 0,
                     position: 'fixed',
                     top: 0,
-                    'z-index': 998
+                    'z-index': 9998
                 }).click(function ()
                 {
-                    hideNav();
+                    end(0);
                 });
 
                 $swipe.bind(dragTarget, {
                     start: function ()
                     {
-                        dragTarget.css({width: '100%'});
-                        body.css({overflow: 'hidden'});
+                        start();
                     },
                     move: function (cord)
                     {
                         if (menuWidth > cord.x) {
                             elem.css({
                                 transform: 'translateX(' + (cord.x + 1 - menuWidth) + 'px)',
-                                'box-shadow': '0 0 15px'
+                                'box-shadow': '-2px 0 10px'
                             });
                             dragTarget.css({opacity: (cord.x + 1) / menuWidth});
                         }
                     },
                     end: function (cord)
                     {
-                        elem.css({transition: 'transform ' + animationDelay + 'ms, box-shadow ' + animationDelay + 'ms'});
-                        dragTarget.css({transition: 'opacity ' + animationDelay + 'ms'});
-
-                        (menuWidth / 2) < cord.x ? showNav() : hideNav();
-
-                        $timeout(function ()
-                        {
-                            elem.css({transition: ''});
-                            dragTarget.css({transition: ''});
-                        }, timeoutDelay)
+                        end(cord.x);
                     },
-                    cancel: function ()
+                    cancel: function (raw)
                     {
-                        console.log('cancel');
+                        end(raw.originalEvent.touches[0].clientX)
                     }
                 }, ['touch']);
             }
         };
     }
 
-    angular.module('swipeSideNav', []).directive('swipeSideNav', ['$swipe', '$timeout', SwipeSideNav]);
+    angular.module('swipeNavDrawer', []).directive('swipeNavDrawer', ['$swipe', '$timeout', SwipeNavDrawer]);
 })();
