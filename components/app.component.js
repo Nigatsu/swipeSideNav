@@ -2,7 +2,7 @@
 {
     'use strict';
 
-    angular.module('component-app', ['ngResource', 'ui.bootstrap', 'ngAnimate', 'angular-loading-bar', 'ngTouch', 'swipeSideNav',
+    angular.module('component-app', ['ngResource', 'ui.bootstrap', 'ngAnimate', 'angular-loading-bar', 'ngTouch', 'swipeNavDrawer',
         // internal components
             'component-app.manager',
             'component-app.home'

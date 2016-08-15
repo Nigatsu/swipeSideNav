@@ -4,25 +4,14 @@
 
     function ManagerController()
     {
-        this.menu = {
-            pl: 'menu',
-            en: 'menu'
-        };
+        var ctrl = this;
 
-        this.about = {
-            pl: 'o nas',
-            en: 'about'
-        };
+        this.menuControl = {};
 
-        this.contact = {
-            pl: 'kontakt',
-            en: 'contact'
-        };
-        
-        this.language = {
-            pl: 'pl',
-            en: 'en'
-        };
+        this.toggleMenu = function ()
+        {
+            ctrl.menuControl.toggle();
+        }
     }
 
     angular.module('component-app.manager', []).component('manager', {
