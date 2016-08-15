@@ -1,0 +1,7 @@
+home h1:nth-of-type(even) {
+  text-align: right;
+}
+manager nav {
+  width: 250px;
+  background: #fff;
+}

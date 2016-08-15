@@ -1,6 +1,0 @@
-app/bower_components
-app/styles/main.css
-node_modules
-dist/
-*.iml
-.idea
