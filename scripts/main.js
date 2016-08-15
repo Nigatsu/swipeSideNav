@@ -56657,3 +56657,199 @@ a.touches:[a];var b=a[0].clientX,e=a[0].clientY;g.push(b,e);k(function(){for(var
 d.on("touchend",function(c){var h=Date.now()-p,f=c.originalEvent||c,m=(f.changedTouches&&f.changedTouches.length?f.changedTouches:f.touches&&f.touches.length?f.touches:[f])[0],f=m.clientX,m=m.clientY,v=Math.sqrt(Math.pow(f-s,2)+Math.pow(m-t,2));w&&750>h&&12>v&&(g||(e[0].addEventListener("click",b,!0),e[0].addEventListener("touchstart",l,!0),g=[]),u=Date.now(),a(g,f,m),q&&q.blur(),n.isDefined(k.disabled)&&!1!==k.disabled||d.triggerHandler("click",[c]));w=!1;d.removeClass("ng-click-active")});d.onclick=
 function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})})});d.on("mousedown",function(a){d.addClass("ng-click-active")});d.on("mousemove mouseup",function(a){d.removeClass("ng-click-active")})}}];v("ngSwipeLeft",-1,"swipeleft");v("ngSwipeRight",1,"swiperight")})(window,window.angular);
 //# sourceMappingURL=angular-touch.min.js.map
+
+(function ()
+{
+    'use strict';
+
+    angular.module('component-app', ['ngResource', 'ui.bootstrap', 'ngAnimate', 'angular-loading-bar', 'ngTouch', 'swipeNavDrawer',
+        // internal components
+            'component-app.manager',
+            'component-app.home'
+    ]).component('app', {
+        templateUrl: 'components/app.tpl.html'
+    });
+})();
+
+
+(function ()
+{
+    'use strict';
+
+    function ManagerController()
+    {
+        var ctrl = this;
+
+        this.menuControl = {};
+
+        this.toggleMenu = function ()
+        {
+            ctrl.menuControl.toggle();
+        }
+    }
+
+    angular.module('component-app.manager', []).component('manager', {
+        controller: [ManagerController],
+        templateUrl: 'components/manager/manager.tpl.html'
+    });
+})();
+
+(function ()
+{
+    'use strict';
+
+    function HomeController()
+    {
+
+    }
+
+    angular.module('component-app.home', ['ngRoute']).component('home', {
+        controller: HomeController,
+        templateUrl: 'components/home/home.tpl.html'
+    }).config(['$routeProvider', function ($routeProvider)
+    {
+        $routeProvider.when('/', {
+            template: '<home></home>'
+        });
+    }]);
+})();
+
+(function ()
+{
+    'use strict';
+
+    function SwipeNavDrawer($swipe, $timeout)
+    {
+        return {
+            restrict: 'A',
+            scope: {
+                swipeNavDrawerEdge: '@',
+                swipeNavDrawerControl: '='
+            },
+            link: function (scope, elem)
+            {
+                var menuWidth = elem.width();
+                var dragTargetWidth = '10px';
+                var menuVisible = false;
+                var timeoutDelay = 300;
+                var animationDelay = 200;
+
+                function showDrawer()
+                {
+                    elem.css({transform: 'translateX(0px)'});
+                    dragTarget.css({opacity: 1});
+                    menuVisible = true;
+                }
+
+                function hideDrawer()
+                {
+                    elem.css({
+                        transform: 'translateX(-100%)',
+                        'box-shadow': '0 0 0'
+                    });
+                    dragTarget.css({opacity: 0});
+
+                    $timeout(function ()
+                    {
+                        dragTarget.css({width: dragTargetWidth});
+                        body.css({overflow: ''});
+                    }, timeoutDelay);
+                    menuVisible = false;
+                }
+
+                function start()
+                {
+                    elem.css({'will-change': 'transform'});
+                    dragTarget.css({
+                        width: '100%',
+                        'will-change': 'opacity'
+                    });
+                    body.css({overflow: 'hidden'});
+                }
+
+                function end(x)
+                {
+                    elem.css({transition: 'transform ' + animationDelay + 'ms, box-shadow ' + animationDelay + 'ms'});
+                    dragTarget.css({transition: 'opacity ' + animationDelay + 'ms'});
+
+                    (menuWidth / 2) < x ? showDrawer() : hideDrawer();
+
+                    $timeout(function ()
+                    {
+                        var cleanUp = {
+                            transition: '',
+                            'will-change': ''
+                        };
+
+                        elem.css(cleanUp);
+                        dragTarget.css(cleanUp);
+                    }, timeoutDelay)
+                }
+
+                function toggleDrawer()
+                {
+                    start();
+                    elem.css({'box-shadow': '-2px 0 10px'});
+                    menuVisible ? end(0) : end(menuWidth);
+                }
+
+                scope.swipeNavDrawerControl = {toggle: toggleDrawer};
+
+                var body = elem.closest("body");
+                var dragTarget = angular.element('<div class="drag-target"></div>');
+                elem.parent().append(dragTarget);
+
+                elem.css({
+                    transform: 'translateX(-100%)',
+                    'overflow-y': 'scroll',
+                    height: 'calc(100% + 60px)',
+                    'padding-bottom': '60px',
+                    position: 'fixed',
+                    top: 0,
+                    'z-index': 9999
+                });
+
+                dragTarget.css({
+                    background: 'rgba(0, 0, 0, .5)',
+                    width: dragTargetWidth,
+                    height: 'calc(100% + 60px)',
+                    'padding-bottom': '60px',
+                    opacity: 0,
+                    position: 'fixed',
+                    top: 0,
+                    'z-index': 9998
+                }).click(function ()
+                {
+                    end(0);
+                });
+
+                $swipe.bind(dragTarget, {
+                    start: function ()
+                    {
+                        start();
+                    },
+                    move: function (cord)
+                    {
+                        if (menuWidth > cord.x) {
+                            elem.css({
+                                transform: 'translateX(' + (cord.x + 1 - menuWidth) + 'px)',
+                                'box-shadow': '-2px 0 10px'
+                            });
+                            dragTarget.css({opacity: (cord.x + 1) / menuWidth});
+                        }
+                    },
+                    end: function (cord)
+                    {
+                        end(cord.x);
+                    },
+                    cancel: function (raw)
+                    {
+                        end(raw.originalEvent.touches[0].clientX)
+                    }
+                }, ['touch']);
+            }
+        };
+    }
+
+    angular.module('swipeNavDrawer', []).directive('swipeNavDrawer', ['$swipe', '$timeout', SwipeNavDrawer]);
+})();
