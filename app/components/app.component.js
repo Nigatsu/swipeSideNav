@@ -7,7 +7,7 @@
             'component-app.manager',
             'component-app.home'
     ]).component('app', {
-        templateUrl: '../components/app.tpl.html'
+        templateUrl: 'components/app.tpl.html'
     });
 })();
 

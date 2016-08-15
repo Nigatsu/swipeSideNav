@@ -16,6 +16,6 @@
 
     angular.module('component-app.manager', []).component('manager', {
         controller: [ManagerController],
-        templateUrl: '../components/manager/manager.tpl.html'
+        templateUrl: 'components/manager/manager.tpl.html'
     });
 })();

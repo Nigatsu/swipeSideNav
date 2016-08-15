@@ -2,5 +2,6 @@ app/bower_components
 app/styles/main.css
 node_modules
 dist/
+.publish/
 *.iml
 .idea

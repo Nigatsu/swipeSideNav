@@ -9,7 +9,7 @@
 
     angular.module('component-app.home', ['ngRoute']).component('home', {
         controller: HomeController,
-        templateUrl: '../components/home/home.tpl.html'
+        templateUrl: 'components/home/home.tpl.html'
     }).config(['$routeProvider', function ($routeProvider)
     {
         $routeProvider.when('/', {
