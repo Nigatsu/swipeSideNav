@@ -2,20 +2,21 @@
 {
     'use strict';
 
-    function ManagerController()
+    function ManagerController(SwipeNavDrawerControl)
     {
         var ctrl = this;
 
-        this.menuControl = {};
+        this.menuLeft = 'Menu Left';
+        this.menuRight = 'Menu Right';
 
-        this.toggleMenu = function ()
+        ctrl.toggleMenu = function ()
         {
-            ctrl.menuControl.toggle();
-        }
+            SwipeNavDrawerControl.toggleDrawer('right');
+        };
     }
 
     angular.module('component-app.manager', []).component('manager', {
-        controller: [ManagerController],
+        controller: ['SwipeNavDrawerControl', ManagerController],
         templateUrl: 'components/manager/manager.tpl.html'
     });
 })();
