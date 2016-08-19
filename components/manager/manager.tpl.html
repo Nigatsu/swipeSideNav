@@ -1,5 +1,5 @@
 <header class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
+    <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-ng-click="$ctrl.toggleMenu()">
                 <span class="sr-only">Toggle navigation</span>
@@ -9,45 +9,16 @@
             </button>
         </div>
     </div>
-
-
-
 </header>
 
-<nav class="menu" data-swipe-nav-drawer data-swipe-nav-drawer-control="$ctrl.menuControl">
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
-    <h1>MENU</h1>
+<nav class="menu" data-swipe-nav-drawer="left">
+    <div class="container">
+        <h1>{{ $ctrl.menuLeft }}</h1>
+    </div>
+</nav>
+
+<nav class="menu" data-swipe-nav-drawer="right">
+    <div class="container">
+        <h1>{{ $ctrl.menuRight }}</h1>
+    </div>
 </nav>

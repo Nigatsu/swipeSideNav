@@ -56676,20 +56676,21 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
 {
     'use strict';
 
-    function ManagerController()
+    function ManagerController(SwipeNavDrawerControl)
     {
         var ctrl = this;
 
-        this.menuControl = {};
+        this.menuLeft = 'Menu Left';
+        this.menuRight = 'Menu Right';
 
-        this.toggleMenu = function ()
+        ctrl.toggleMenu = function ()
         {
-            ctrl.menuControl.toggle();
-        }
+            SwipeNavDrawerControl.toggleDrawer('right');
+        };
     }
 
     angular.module('component-app.manager', []).component('manager', {
-        controller: [ManagerController],
+        controller: ['SwipeNavDrawerControl', ManagerController],
         templateUrl: 'components/manager/manager.tpl.html'
     });
 })();
@@ -56718,138 +56719,177 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
 {
     'use strict';
 
-    function SwipeNavDrawer($swipe, $timeout)
+    function SwipeNavDrawerControl()
+    {
+        var instanceDrawer = {};
+
+        this.registerDrawer = function registerDrawer(name, ctrl) {
+            instanceDrawer[name] = ctrl;
+        };
+
+        this.toggleDrawer = function toggleDrawer(name) {
+            name = name || 'left';
+            return instanceDrawer[name].toggleDrawer();
+        };
+
+        this.deregisterDrawer = function deregisterDrawer(name) {
+            instanceDrawer[name] = null;
+        };
+    }
+
+    function SwipeNavDrawer($swipe, $timeout, SwipeNavDrawerControl)
     {
         return {
             restrict: 'A',
             scope: {
-                swipeNavDrawerEdge: '@',
-                swipeNavDrawerControl: '='
+                swipeNavDrawer: '@'
             },
-            link: function (scope, elem)
+            link: function (scope, drawer)
             {
-                var menuWidth = elem.width();
-                var dragTargetWidth = '10px';
-                var menuVisible = false;
+                var drawerEdge = scope.swipeNavDrawer || 'left';
+                var drawerWidth = drawer.width();
+                var drawerVisible = false;
+                var body = drawer.closest('body');
+                var bodyWidth = body.width();
+                var handhold = angular.element('<div class="swipeNavHandhold"></div>');
                 var timeoutDelay = 300;
-                var animationDelay = 200;
+                var control = {};
+
+                function leftOrRight()
+                {
+                    return 'left' === drawerEdge;
+                }
 
                 function showDrawer()
                 {
-                    elem.css({transform: 'translateX(0px)'});
-                    dragTarget.css({opacity: 1});
-                    menuVisible = true;
+                    drawer.removeClass('drawerHidden').addClass('drawerShown').css({'transform': ''});
+                    handhold.removeClass('handholdHidden').addClass('handholdShown').css({'opacity': ''});
+                    drawerVisible = true;
                 }
 
                 function hideDrawer()
                 {
-                    elem.css({
-                        transform: 'translateX(-100%)',
-                        'box-shadow': '0 0 0'
-                    });
-                    dragTarget.css({opacity: 0});
-
-                    $timeout(function ()
-                    {
-                        dragTarget.css({width: dragTargetWidth});
-                        body.css({overflow: ''});
-                    }, timeoutDelay);
-                    menuVisible = false;
+                    drawer.removeClass('drawerShown').addClass('drawerHidden').css({'transform': ''});
+                    handhold.removeClass('handholdShown').addClass('handholdHidden').css({'opacity': ''});
+                    body.removeClass('overflowHidden');
+                    drawerVisible = false;
                 }
 
                 function start()
                 {
-                    elem.css({'will-change': 'transform'});
-                    dragTarget.css({
-                        width: '100%',
-                        'will-change': 'opacity'
-                    });
-                    body.css({overflow: 'hidden'});
+                    body.addClass('overflowHidden');
+                }
+
+                function move(x)
+                {
+                    drawer.removeClass('drawerHidden drawerShown').addClass('drawerSwipe');
+                    handhold.removeClass('handholdHidden handholdShown').addClass('handholdSwipe');
+
+                    if (leftOrRight()) {
+                        if (drawerWidth > x) {
+                            drawer.css({'transform': 'translateX(' + (x + 1 - drawerWidth) + 'px)'});
+                            handhold.css({'opacity': (x + 1) / drawerWidth});
+                            drawerVisible = false;
+                        } else {
+                            showDrawer();
+                        }
+                    } else {
+                        if (drawerWidth > bodyWidth - x) {
+                            drawer.css({'transform': 'translateX(' + Math.abs(bodyWidth - x - drawerWidth) + 'px)'});
+                            handhold.css({'opacity': (bodyWidth - x) / drawerWidth});
+                            drawerVisible = false;
+                        } else {
+                            showDrawer();
+                        }
+                    }
                 }
 
                 function end(x)
                 {
-                    elem.css({transition: 'transform ' + animationDelay + 'ms, box-shadow ' + animationDelay + 'ms'});
-                    dragTarget.css({transition: 'opacity ' + animationDelay + 'ms'});
+                    drawer.removeClass('drawerSwipe').addClass('drawerMove');
+                    handhold.removeClass('handholdSwipe').addClass('handholdMove');
 
-                    (menuWidth / 2) < x ? showDrawer() : hideDrawer();
+                    if (leftOrRight()) {
+                        if ((drawerWidth / 2) < x) {
+                            showDrawer();
+                        } else {
+                            hideDrawer();
+                        }
+                    } else {
+                        if ((drawerWidth / 2) < bodyWidth - x) {
+                            showDrawer();
+                        } else {
+                            hideDrawer();
+                        }
+                    }
 
                     $timeout(function ()
                     {
-                        var cleanUp = {
-                            transition: '',
-                            'will-change': ''
-                        };
-
-                        elem.css(cleanUp);
-                        dragTarget.css(cleanUp);
-                    }, timeoutDelay)
+                        drawer.removeClass('drawerMove');
+                        handhold.removeClass('handholdMove');
+                    }, timeoutDelay);
                 }
 
                 function toggleDrawer()
                 {
                     start();
-                    elem.css({'box-shadow': '-2px 0 10px'});
-                    menuVisible ? end(0) : end(menuWidth);
+                    if (leftOrRight()) {
+                        end(drawerVisible ? 0 : drawerWidth);
+                    } else {
+                        end(drawerVisible ? bodyWidth : drawerWidth);
+                    }
                 }
 
-                scope.swipeNavDrawerControl = {toggle: toggleDrawer};
-
-                var body = elem.closest("body");
-                var dragTarget = angular.element('<div class="drag-target"></div>');
-                elem.parent().append(dragTarget);
-
-                elem.css({
-                    transform: 'translateX(-100%)',
-                    'overflow-y': 'scroll',
-                    height: 'calc(100% + 60px)',
-                    'padding-bottom': '60px',
-                    position: 'fixed',
-                    top: 0,
-                    'z-index': 9999
-                });
-
-                dragTarget.css({
-                    background: 'rgba(0, 0, 0, .5)',
-                    width: dragTargetWidth,
-                    height: 'calc(100% + 60px)',
-                    'padding-bottom': '60px',
-                    opacity: 0,
-                    position: 'fixed',
-                    top: 0,
-                    'z-index': 9998
-                }).click(function ()
+                function init()
                 {
-                    end(0);
-                });
+                    control.toggleDrawer = toggleDrawer;
 
-                $swipe.bind(dragTarget, {
-                    start: function ()
+                    SwipeNavDrawerControl.registerDrawer(drawerEdge, control);
+
+                    drawer.parent().prepend(handhold);
+
+                    drawer.addClass('swipeNavDrawer');
+
+                    handhold.click(function ()
                     {
-                        start();
-                    },
-                    move: function (cord)
-                    {
-                        if (menuWidth > cord.x) {
-                            elem.css({
-                                transform: 'translateX(' + (cord.x + 1 - menuWidth) + 'px)',
-                                'box-shadow': '-2px 0 10px'
-                            });
-                            dragTarget.css({opacity: (cord.x + 1) / menuWidth});
+                        end(leftOrRight() ? 0 : bodyWidth);
+                    });
+
+                    drawer.addClass((leftOrRight() ? 'drawerLeft' : 'drawerRight') + ' drawerHidden');
+                    handhold.addClass((leftOrRight() ? 'handholdLeft' : 'handholdRight') + ' handholdHidden');
+
+                    $swipe.bind(handhold, {
+                        start: function ()
+                        {
+                            start();
+                        },
+                        move: function (cord)
+                        {
+                            move(cord.x);
+                        },
+                        end: function (cord)
+                        {
+                            end(cord.x);
+                        },
+                        cancel: function (raw)
+                        {
+                            end(raw.originalEvent.touches[0].clientX);
                         }
-                    },
-                    end: function (cord)
-                    {
-                        end(cord.x);
-                    },
-                    cancel: function (raw)
-                    {
-                        end(raw.originalEvent.touches[0].clientX)
-                    }
-                }, ['touch']);
+                    }, ['touch']);
+                }
+
+                init();
+
+                scope.$on('$destroy', function ()
+                {
+                    SwipeNavDrawerControl.deregisterDrawer(drawerEdge);
+                    scope.$destroy();
+                });
             }
         };
     }
 
-    angular.module('swipeNavDrawer', []).directive('swipeNavDrawer', ['$swipe', '$timeout', SwipeNavDrawer]);
+    angular.module('swipeNavDrawer', [])
+            .service('SwipeNavDrawerControl', [SwipeNavDrawerControl])
+            .directive('swipeNavDrawer', ['$swipe', '$timeout', 'SwipeNavDrawerControl', SwipeNavDrawer]);
 })();

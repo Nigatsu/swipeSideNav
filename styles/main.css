@@ -237,7 +237,7 @@
   100% { transform: rotate(360deg); transform: rotate(360deg); }
 }
 
-home .container-fluid {
+home .container {
   padding-top: 70px;
 }
 home .panel-body {
@@ -254,6 +254,76 @@ manager header.navbar-default .navbar-toggle:focus {
   background-color: transparent;
 }
 manager .menu {
-  width: 250px;
+  width: 300px;
   background: #fff;
+}
+.overflowHidden {
+  overflow: hidden;
+}
+.swipeNavDrawer {
+  height: calc(100% + 60px);
+  padding-bottom: 60px;
+  position: fixed;
+  top: 0;
+  z-index: 9999;
+  overflow-y: auto;
+}
+.swipeNavDrawer.drawerLeft {
+  left: 0;
+}
+.swipeNavDrawer.drawerLeft.drawerHidden {
+  transform: translateX(-100%);
+  box-shadow: 0 0 0;
+}
+.swipeNavDrawer.drawerRight {
+  right: 0;
+}
+.swipeNavDrawer.drawerRight.drawerHidden {
+  transform: translateX(100%);
+  box-shadow: 0 0 0;
+}
+.swipeNavDrawer.drawerShown {
+  transform: translateX(0);
+  box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
+  z-index: 10000;
+}
+.swipeNavDrawer.drawerSwipe {
+  will-change: transform;
+  backface-visibility: hidden;
+  box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
+  z-index: 10000;
+}
+.swipeNavDrawer.drawerMove {
+  transition: transform 200ms, box-shadow 200ms;
+}
+.swipeNavHandhold {
+  background: rgba(0, 0, 0, 0.5);
+  height: calc(100% + 60px);
+  padding-bottom: 60px;
+  position: fixed;
+  top: 0;
+  z-index: 9999;
+}
+.swipeNavHandhold.handholdLeft {
+  left: 0;
+}
+.swipeNavHandhold.handholdRight {
+  right: 0;
+}
+.swipeNavHandhold.handholdHidden {
+  width: 10px;
+  opacity: 0;
+}
+.swipeNavHandhold.handholdShown {
+  width: 100%;
+  opacity: 1;
+}
+.swipeNavHandhold.handholdSwipe {
+  will-change: transform;
+  backface-visibility: hidden;
+  width: 100%;
+  z-index: 10000;
+}
+.swipeNavHandhold.handholdMove {
+  transition: opacity 200ms;
 }
