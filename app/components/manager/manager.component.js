@@ -11,7 +11,7 @@
 
         ctrl.toggleMenu = function ()
         {
-            SwipeNavDrawerControl.toggleDrawer('right');
+            SwipeNavDrawerControl.toggle('right');
         };
     }
 
