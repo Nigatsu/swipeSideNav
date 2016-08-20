@@ -295,6 +295,7 @@ manager .menu {
 }
 .swipeNavDrawer.drawerMove {
   transition: transform 200ms, box-shadow 200ms;
+  box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
 }
 .swipeNavHandhold {
   background: rgba(0, 0, 0, 0.5);
@@ -326,4 +327,5 @@ manager .menu {
 }
 .swipeNavHandhold.handholdMove {
   transition: opacity 200ms;
+  width: 100%;
 }

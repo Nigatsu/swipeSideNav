@@ -56685,7 +56685,7 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
 
         ctrl.toggleMenu = function ()
         {
-            SwipeNavDrawerControl.toggleDrawer('right');
+            SwipeNavDrawerControl.toggle('right');
         };
     }
 
@@ -56719,25 +56719,27 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
 {
     'use strict';
 
+    var instanceDrawer = {};
+
+    function registerDrawer(name, ctrl)
+    {
+        instanceDrawer[name] = ctrl;
+    }
+
+    function deregisterDrawer(name)
+    {
+        instanceDrawer[name] = undefined;
+    }
+
     function SwipeNavDrawerControl()
     {
-        var instanceDrawer = {};
-
-        this.registerDrawer = function registerDrawer(name, ctrl) {
-            instanceDrawer[name] = ctrl;
-        };
-
-        this.toggleDrawer = function toggleDrawer(name) {
+        this.toggle = function toggleDrawer(name) {
             name = name || 'left';
             return instanceDrawer[name].toggleDrawer();
         };
-
-        this.deregisterDrawer = function deregisterDrawer(name) {
-            instanceDrawer[name] = null;
-        };
     }
 
-    function SwipeNavDrawer($swipe, $timeout, SwipeNavDrawerControl)
+    function SwipeNavDrawer($swipe, $timeout)
     {
         return {
             restrict: 'A',
@@ -56777,6 +56779,8 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
 
                 function start()
                 {
+                    drawerWidth = drawer.width();
+                    bodyWidth = body.width();
                     body.addClass('overflowHidden');
                 }
 
@@ -56834,9 +56838,9 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
                 {
                     start();
                     if (leftOrRight()) {
-                        end(drawerVisible ? 0 : drawerWidth);
+                        end(drawerVisible ? 0 : bodyWidth);
                     } else {
-                        end(drawerVisible ? bodyWidth : drawerWidth);
+                        end(drawerVisible ? bodyWidth : 0);
                     }
                 }
 
@@ -56844,7 +56848,7 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
                 {
                     control.toggleDrawer = toggleDrawer;
 
-                    SwipeNavDrawerControl.registerDrawer(drawerEdge, control);
+                    registerDrawer(drawerEdge, control);
 
                     drawer.parent().prepend(handhold);
 
@@ -56882,7 +56886,7 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
 
                 scope.$on('$destroy', function ()
                 {
-                    SwipeNavDrawerControl.deregisterDrawer(drawerEdge);
+                    deregisterDrawer(drawerEdge);
                     scope.$destroy();
                 });
             }
@@ -56891,5 +56895,5 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
 
     angular.module('swipeNavDrawer', [])
             .service('SwipeNavDrawerControl', [SwipeNavDrawerControl])
-            .directive('swipeNavDrawer', ['$swipe', '$timeout', 'SwipeNavDrawerControl', SwipeNavDrawer]);
+            .directive('swipeNavDrawer', ['$swipe', '$timeout', SwipeNavDrawer]);
 })();
