@@ -253,16 +253,27 @@ manager header.navbar-default .navbar-toggle {
 manager header.navbar-default .navbar-toggle:focus {
   background-color: transparent;
 }
-manager .menu {
+manager .menu-left {
   width: 300px;
   background: #fff;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+manager .menu-right {
+  width: 150px;
+  background: #fff;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 .overflowHidden {
   overflow: hidden;
 }
+.displayNone {
+  display: none;
+}
 .swipeNavDrawer {
-  height: calc(100% + 60px);
-  padding-bottom: 60px;
+  height: calc(100% + 100px);
+  padding-bottom: 100px;
   position: fixed;
   top: 0;
   z-index: 9999;
@@ -287,6 +298,11 @@ manager .menu {
   box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
   z-index: 10000;
 }
+.swipeNavDrawer.drawerShownFixed {
+  transform: translateX(0);
+  box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
+  z-index: 9999;
+}
 .swipeNavDrawer.drawerSwipe {
   will-change: transform;
   backface-visibility: hidden;
@@ -294,13 +310,13 @@ manager .menu {
   z-index: 10000;
 }
 .swipeNavDrawer.drawerMove {
-  transition: transform 200ms, box-shadow 200ms;
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
   box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
 }
 .swipeNavHandhold {
   background: rgba(0, 0, 0, 0.5);
-  height: calc(100% + 60px);
-  padding-bottom: 60px;
+  height: calc(100% + 100px);
+  padding-bottom: 100px;
   position: fixed;
   top: 0;
   z-index: 9999;
@@ -327,6 +343,28 @@ manager .menu {
   z-index: 10000;
 }
 .swipeNavHandhold.handholdMove {
-  transition: opacity 200ms;
+  transition: opacity 200ms ease-out;
   width: 100%;
+}
+@media (min-width: 768px) {
+  .container {
+    max-width: 750px;
+    width: auto;
+  }
+  header,
+  main {
+    padding-left: 300px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    max-width: 970px;
+    width: auto;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1170px;
+    width: auto;
+  }
 }
