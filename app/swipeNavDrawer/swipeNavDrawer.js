@@ -34,6 +34,7 @@
             link: function (scope, drawer)
             {
                 var drawerEdge = scope.swipeNavDrawer || 'left';
+                var drawerFixedPoint = scope.drawerFixed || null;
                 var drawerWidth = drawer.width();
                 var drawerVisible = false;
                 var body = drawer.closest('body');
@@ -131,12 +132,14 @@
 
                 function afterResize()
                 {
-                    if (body.width() >= scope.drawerFixed) {
-                        drawer.removeClass('drawerHidden drawerShown').addClass('drawerShownFixed');
-                        handhold.removeClass('handholdHidden handholdShown').addClass('displayNone');
-                        body.removeClass('overflowHidden');
-                        drawerVisible = false;
-                    } else if (!drawer.hasClass('drawerShown')) {
+                    if (body.width() >= drawerFixedPoint) {
+                        if (!drawer.hasClass('drawerShownFixed')) {
+                            drawer.removeClass('drawerHidden drawerShown').addClass('drawerShownFixed');
+                            handhold.removeClass('handholdHidden handholdShown').addClass('displayNone');
+                            body.removeClass('overflowHidden');
+                            drawerVisible = false;
+                        }
+                    } else if (drawer.hasClass('drawerShownFixed')) {
                         drawer.removeClass('drawerShownFixed').addClass('drawerHidden');
                         handhold.removeClass('displayNone').addClass('handholdHidden');
                     }
