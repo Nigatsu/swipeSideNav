@@ -16,18 +16,20 @@
 
     function SwipeNavDrawerControl()
     {
-        this.toggle = function toggleDrawer(name) {
+        this.toggle = function toggleDrawer(name)
+        {
             name = name || 'left';
             return instanceDrawer[name].toggleDrawer();
         };
     }
 
-    function SwipeNavDrawer($swipe, $timeout)
+    function SwipeNavDrawer($swipe, $timeout, $window)
     {
         return {
             restrict: 'A',
             scope: {
-                swipeNavDrawer: '@'
+                swipeNavDrawer: '@',
+                drawerFixed: '@'
             },
             link: function (scope, drawer)
             {
@@ -127,6 +129,19 @@
                     }
                 }
 
+                function afterResize()
+                {
+                    if (body.width() >= scope.drawerFixed) {
+                        drawer.removeClass('drawerHidden drawerShown').addClass('drawerShownFixed');
+                        handhold.removeClass('handholdHidden handholdShown').addClass('displayNone');
+                        body.removeClass('overflowHidden');
+                        drawerVisible = false;
+                    } else if (!drawer.hasClass('drawerShown')) {
+                        drawer.removeClass('drawerShownFixed').addClass('drawerHidden');
+                        handhold.removeClass('displayNone').addClass('handholdHidden');
+                    }
+                }
+
                 function init()
                 {
                     control.toggleDrawer = toggleDrawer;
@@ -144,6 +159,11 @@
 
                     drawer.addClass((leftOrRight() ? 'drawerLeft' : 'drawerRight') + ' drawerHidden');
                     handhold.addClass((leftOrRight() ? 'handholdLeft' : 'handholdRight') + ' handholdHidden');
+
+                    if (scope.drawerFixed) {
+                        angular.element($window).resize(afterResize);
+                        afterResize();
+                    }
 
                     $swipe.bind(handhold, {
                         start: function ()
@@ -178,5 +198,5 @@
 
     angular.module('swipeNavDrawer', [])
             .service('SwipeNavDrawerControl', [SwipeNavDrawerControl])
-            .directive('swipeNavDrawer', ['$swipe', '$timeout', SwipeNavDrawer]);
+            .directive('swipeNavDrawer', ['$swipe', '$timeout', '$window', SwipeNavDrawer]);
 })();

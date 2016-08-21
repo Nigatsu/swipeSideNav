@@ -9,9 +9,14 @@
         this.menuLeft = 'Menu Left';
         this.menuRight = 'Menu Right';
 
-        ctrl.toggleMenu = function ()
+        ctrl.toggleMenuRight = function ()
         {
             SwipeNavDrawerControl.toggle('right');
+        };
+
+        ctrl.toggleMenuLeft = function ()
+        {
+            SwipeNavDrawerControl.toggle('left');
         };
     }
 

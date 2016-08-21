@@ -4,9 +4,13 @@
   overflow: hidden;
 }
 
+.displayNone {
+  display: none;
+}
+
 .swipeNavDrawer {
-  height: ~"calc(100% + 60px)";
-  padding-bottom: 60px;
+  height: ~"calc(100% + 100px)";
+  padding-bottom: 100px;
   position: fixed;
   top: 0;
   z-index: 9999;
@@ -36,6 +40,12 @@
     z-index: 10000;
   }
 
+  &.drawerShownFixed {
+    transform: translateX(0);
+    box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
+    z-index: 9999;
+  }
+
   &.drawerSwipe {
     will-change: transform;
     backface-visibility: hidden;
@@ -44,15 +54,15 @@
   }
 
   &.drawerMove {
-    transition: transform @animationDelay, box-shadow @animationDelay;
+    transition: transform @animationDelay ease-out, box-shadow @animationDelay ease-out;
     box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
   }
 }
 
 .swipeNavHandhold {
   background: rgba(0, 0, 0, .5);
-  height: ~"calc(100% + 60px)";
-  padding-bottom: 60px;
+  height: ~"calc(100% + 100px)";
+  padding-bottom: 100px;
   position: fixed;
   top: 0;
   z-index: 9999;
@@ -84,7 +94,7 @@
   }
 
   &.handholdMove {
-    transition: opacity @animationDelay;
+    transition: opacity @animationDelay ease-out;
     width: 100%;
   }
 }
