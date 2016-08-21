@@ -199,7 +199,7 @@
         };
     }
 
-    angular.module('swipeNavDrawer', [])
+    angular.module('swipeNavDrawer', ['ngTouch'])
             .service('SwipeNavDrawerControl', [SwipeNavDrawerControl])
             .directive('swipeNavDrawer', ['$swipe', '$timeout', '$window', SwipeNavDrawer]);
 })();
