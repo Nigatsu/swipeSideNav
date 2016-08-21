@@ -56662,7 +56662,7 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
 {
     'use strict';
 
-    angular.module('component-app', ['ngResource', 'ui.bootstrap', 'ngAnimate', 'angular-loading-bar', 'ngTouch', 'swipeNavDrawer',
+    angular.module('component-app', ['ngResource', 'ui.bootstrap', 'angular-loading-bar', 'swipeNavDrawer',
         // internal components
             'component-app.manager',
             'component-app.home'
@@ -56921,7 +56921,7 @@ function(a){};d.on("click",function(a,b){h.$apply(function(){c(h,{$event:b||a})}
         };
     }
 
-    angular.module('swipeNavDrawer', [])
+    angular.module('swipeNavDrawer', ['ngTouch'])
             .service('SwipeNavDrawerControl', [SwipeNavDrawerControl])
             .directive('swipeNavDrawer', ['$swipe', '$timeout', '$window', SwipeNavDrawer]);
 })();
