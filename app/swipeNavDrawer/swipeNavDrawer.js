@@ -33,13 +33,16 @@
             },
             link: function (scope, drawer)
             {
+                var startPoint;
                 var drawerEdge = scope.swipeNavDrawer || 'left';
                 var drawerFixedPoint = scope.drawerFixed || null;
-                var drawerWidth = drawer.width();
+                var drawerWidth = drawer.outerWidth();
                 var drawerVisible = false;
+                var drawerBind = {};
                 var body = drawer.closest('body');
                 var bodyWidth = body.width();
                 var handhold = angular.element('<div class="swipeNavHandhold"></div>');
+                var handholdBind = {};
                 var timeoutDelay = 300;
                 var control = {};
 
@@ -63,9 +66,10 @@
                     drawerVisible = false;
                 }
 
-                function start()
+                function start(startX)
                 {
-                    drawerWidth = drawer.width();
+                    startPoint = startX;
+                    drawerWidth = drawer.outerWidth();
                     bodyWidth = body.width();
                     body.addClass('overflowHidden');
                 }
@@ -76,17 +80,17 @@
                     handhold.removeClass('handholdHidden handholdShown').addClass('handholdSwipe');
 
                     if (leftOrRight()) {
-                        if (drawerWidth > x) {
-                            drawer.css({'transform': 'translateX(' + (x + 1 - drawerWidth) + 'px)'});
-                            handhold.css({'opacity': (x + 1) / drawerWidth});
+                        if (0 > x) {
+                            drawer.css({'transform': 'translateX(' + x + 'px)'});
+                            handhold.css({'opacity': (x + drawerWidth) / drawerWidth});
                             drawerVisible = false;
                         } else {
                             showDrawer();
                         }
                     } else {
-                        if (drawerWidth > bodyWidth - x) {
-                            drawer.css({'transform': 'translateX(' + Math.abs(bodyWidth - x - drawerWidth) + 'px)'});
-                            handhold.css({'opacity': (bodyWidth - x) / drawerWidth});
+                        if (0 < x) {
+                            drawer.css({'transform': 'translateX(' + x + 'px)'});
+                            handhold.css({'opacity': (-x + drawerWidth) / drawerWidth});
                             drawerVisible = false;
                         } else {
                             showDrawer();
@@ -100,13 +104,13 @@
                     handhold.removeClass('handholdSwipe').addClass('handholdMove');
 
                     if (leftOrRight()) {
-                        if ((drawerWidth / 2) < x) {
+                        if ((drawerWidth / 2) < (x + drawerWidth - startPoint)) {
                             showDrawer();
                         } else {
                             hideDrawer();
                         }
                     } else {
-                        if ((drawerWidth / 2) < bodyWidth - x) {
+                        if ((drawerWidth / 2) < (drawerWidth + startPoint - x)) {
                             showDrawer();
                         } else {
                             hideDrawer();
@@ -122,7 +126,7 @@
 
                 function toggleDrawer()
                 {
-                    start();
+                    start(leftOrRight() ? drawerWidth : bodyWidth - drawerWidth);
                     if (leftOrRight()) {
                         end(drawerVisible ? 0 : bodyWidth);
                     } else {
@@ -134,12 +138,14 @@
                 {
                     if (body.width() >= drawerFixedPoint) {
                         if (!drawer.hasClass('drawerShownFixed')) {
+                            drawer.unbind('mousedown mousemove mouseup touchstart touchmove touchend touchcancel');
                             drawer.removeClass('drawerHidden drawerShown').addClass('drawerShownFixed');
                             handhold.removeClass('handholdHidden handholdShown').addClass('displayNone');
                             body.removeClass('overflowHidden');
                             drawerVisible = false;
                         }
                     } else if (drawer.hasClass('drawerShownFixed')) {
+                        $swipe.bind(drawer, drawerBind, ['touch']);
                         drawer.removeClass('drawerShownFixed').addClass('drawerHidden');
                         handhold.removeClass('displayNone').addClass('handholdHidden');
                     }
@@ -163,19 +169,14 @@
                     drawer.addClass((leftOrRight() ? 'drawerLeft' : 'drawerRight') + ' drawerHidden');
                     handhold.addClass((leftOrRight() ? 'handholdLeft' : 'handholdRight') + ' handholdHidden');
 
-                    if (scope.drawerFixed) {
-                        angular.element($window).resize(afterResize);
-                        afterResize();
-                    }
-
-                    $swipe.bind(handhold, {
+                    handholdBind = {
                         start: function ()
                         {
-                            start();
+                            start(leftOrRight() ? drawerWidth : bodyWidth - drawerWidth);
                         },
                         move: function (cord)
                         {
-                            move(cord.x);
+                            move(cord.x - startPoint);
                         },
                         end: function (cord)
                         {
@@ -185,7 +186,34 @@
                         {
                             end(raw.originalEvent.touches[0].clientX);
                         }
-                    }, ['touch']);
+                    };
+
+                    drawerBind = {
+                        start: function (cord)
+                        {
+                            start(cord.x);
+                        },
+                        move: function (cord)
+                        {
+                            move(cord.x - startPoint);
+                        },
+                        end: function (cord)
+                        {
+                            end(cord.x);
+                        },
+                        cancel: function (raw)
+                        {
+                            end(raw.originalEvent.touches[0].clientX);
+                        }
+                    };
+
+                    $swipe.bind(handhold, handholdBind, ['touch']);
+                    $swipe.bind(drawer, drawerBind, ['touch']);
+
+                    if (scope.drawerFixed) {
+                        angular.element($window).resize(afterResize);
+                        afterResize();
+                    }
                 }
 
                 init();
@@ -193,6 +221,8 @@
                 scope.$on('$destroy', function ()
                 {
                     deregisterDrawer(drawerEdge);
+                    drawer.unbind('mousedown mousemove mouseup touchstart touchmove touchend touchcancel');
+                    handhold.unbind('mousedown mousemove mouseup touchstart touchmove touchend touchcancel');
                     scope.$destroy();
                 });
             }
