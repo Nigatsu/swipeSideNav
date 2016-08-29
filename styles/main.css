@@ -312,6 +312,7 @@ manager .menu-right {
 .swipeNavDrawer.drawerMove {
   transition: transform 200ms ease-out, box-shadow 200ms ease-out;
   box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
+  z-index: 10000;
 }
 .swipeNavHandhold {
   background: rgba(0, 0, 0, 0.5);
@@ -345,6 +346,7 @@ manager .menu-right {
 .swipeNavHandhold.handholdMove {
   transition: opacity 200ms ease-out;
   width: 100%;
+  z-index: 10000;
 }
 @media (min-width: 768px) {
   .container {
