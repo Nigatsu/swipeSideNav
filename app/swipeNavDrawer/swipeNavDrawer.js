@@ -33,6 +33,7 @@
             },
             link: function (scope, drawer)
             {
+                var leftOrRight;
                 var startPoint;
                 var drawerEdge = scope.swipeNavDrawer || 'left';
                 var drawerFixedPoint = scope.drawerFixed || null;
@@ -46,7 +47,7 @@
                 var timeoutDelay = 300;
                 var control = {};
 
-                function leftOrRight()
+                function chooseLeftOrRight()
                 {
                     return 'left' === drawerEdge;
                 }
@@ -79,7 +80,7 @@
                     drawer.removeClass('drawerHidden drawerShown').addClass('drawerSwipe');
                     handhold.removeClass('handholdHidden handholdShown').addClass('handholdSwipe');
 
-                    if (leftOrRight()) {
+                    if (leftOrRight) {
                         if (0 > x) {
                             drawer.css({'transform': 'translateX(' + x + 'px)'});
                             handhold.css({'opacity': (x + drawerWidth) / drawerWidth});
@@ -103,18 +104,13 @@
                     drawer.removeClass('drawerSwipe').addClass('drawerMove');
                     handhold.removeClass('handholdSwipe').addClass('handholdMove');
 
-                    if (leftOrRight()) {
-                        if ((drawerWidth / 2) < (x + drawerWidth - startPoint)) {
-                            showDrawer();
-                        } else {
-                            hideDrawer();
-                        }
+                    x = leftOrRight ? x : -x;
+                    startPoint = leftOrRight ? -startPoint : startPoint;
+
+                    if ((drawerWidth / 2) < (x + drawerWidth + startPoint)) {
+                        showDrawer();
                     } else {
-                        if ((drawerWidth / 2) < (drawerWidth + startPoint - x)) {
-                            showDrawer();
-                        } else {
-                            hideDrawer();
-                        }
+                        hideDrawer();
                     }
 
                     $timeout(function ()
@@ -126,8 +122,8 @@
 
                 function toggleDrawer()
                 {
-                    start(leftOrRight() ? drawerWidth : bodyWidth - drawerWidth);
-                    if (leftOrRight()) {
+                    start(leftOrRight ? drawerWidth : bodyWidth - drawerWidth);
+                    if (leftOrRight) {
                         end(drawerVisible ? 0 : bodyWidth);
                     } else {
                         end(drawerVisible ? bodyWidth : 0);
@@ -153,6 +149,7 @@
 
                 function init()
                 {
+                    leftOrRight = chooseLeftOrRight();
                     control.toggleDrawer = toggleDrawer;
 
                     registerDrawer(drawerEdge, control);
@@ -163,16 +160,16 @@
 
                     handhold.click(function ()
                     {
-                        end(leftOrRight() ? 0 : bodyWidth);
+                        end(leftOrRight ? 0 : bodyWidth);
                     });
 
-                    drawer.addClass((leftOrRight() ? 'drawerLeft' : 'drawerRight') + ' drawerHidden');
-                    handhold.addClass((leftOrRight() ? 'handholdLeft' : 'handholdRight') + ' handholdHidden');
+                    drawer.addClass((leftOrRight ? 'drawerLeft' : 'drawerRight') + ' drawerHidden');
+                    handhold.addClass((leftOrRight ? 'handholdLeft' : 'handholdRight') + ' handholdHidden');
 
                     handholdBind = {
                         start: function ()
                         {
-                            start(leftOrRight() ? drawerWidth : bodyWidth - drawerWidth);
+                            start(leftOrRight ? drawerWidth : bodyWidth - drawerWidth);
                         },
                         move: function (cord)
                         {
@@ -191,7 +188,7 @@
                     drawerBind = {
                         start: function (cord)
                         {
-                            start(cord.x);
+                            start(leftOrRight ? cord.x - 10 : cord.x + 10);
                         },
                         move: function (cord)
                         {
