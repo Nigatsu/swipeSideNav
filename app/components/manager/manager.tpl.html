@@ -15,10 +15,18 @@
     </div>
 </header>
 
-<nav class="menu-left" data-swipe-nav-drawer="left" data-drawer-fixed="768">
+<nav class="menu-left" data-swipe-nav-drawer="left" data-drawer-fixed="768" data-drawer-control="$ctrl.menuLeftControl">
     <h1>{{ $ctrl.menuLeft }}</h1>
+    <ul class="nav nav-pills nav-stacked">
+        <li><a href="#/" data-drawer-close-link>Home</a></li>
+        <li><a href="#/about" data-drawer-close-link>About</a></li>
+    </ul>
 </nav>
 
-<nav class="menu-right" data-swipe-nav-drawer="right">
+<nav class="menu-right" data-swipe-nav-drawer="right" data-drawer-control="$ctrl.menuRightControl">
     <h1>{{ $ctrl.menuRight }}</h1>
+    <ul class="nav nav-pills nav-stacked">
+        <li><a href="#/">Home</a></li>
+        <li><a href="#/about">About</a></li>
+    </ul>
 </nav>

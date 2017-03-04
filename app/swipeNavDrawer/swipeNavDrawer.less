@@ -1,14 +1,14 @@
 @animationDelay: 200ms;
 
-.overflowHidden {
+.overflow-hidden {
   overflow: hidden;
 }
 
-.displayNone {
+.display-none {
   display: none;
 }
 
-.swipeNavDrawer {
+.swipe-nav-drawer {
   height: ~"calc(100% + 100px)";
   padding-bottom: 100px;
   position: fixed;
@@ -16,51 +16,51 @@
   z-index: 9999;
   overflow-y: auto;
 
-  &.drawerLeft {
+  &.drawer-left {
     left: 0;
 
-    &.drawerHidden {
+    &.drawer-hidden {
       transform: translateX(-100%);
       box-shadow: 0 0 0;
     }
   }
 
-  &.drawerRight {
+  &.drawer-right {
     right: 0;
 
-    &.drawerHidden {
+    &.drawer-hidden {
       transform: translateX(100%);
       box-shadow: 0 0 0;
     }
   }
 
-  &.drawerShown {
+  &.drawer-shown {
     transform: translateX(0);
     box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
     z-index: 10000;
   }
 
-  &.drawerShownFixed {
+  &.drawer-shown-fixed {
     transform: translateX(0);
     box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
     z-index: 9999;
   }
 
-  &.drawerSwipe {
+  &.drawer-swipe {
     will-change: transform;
     backface-visibility: hidden;
     box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
     z-index: 10000;
   }
 
-  &.drawerMove {
+  &.drawer-move {
     transition: transform @animationDelay ease-out, box-shadow @animationDelay ease-out;
     box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
     z-index: 10000;
   }
 }
 
-.swipeNavHandhold {
+.swipe-nav-handhold {
   background: rgba(0, 0, 0, .5);
   height: ~"calc(100% + 100px)";
   padding-bottom: 100px;
@@ -68,33 +68,33 @@
   top: 0;
   z-index: 9999;
 
-  &.handholdLeft {
+  &.handhold-left {
     left: 0;
   }
 
-  &.handholdRight {
+  &.handhold-right {
     right: 0;
   }
 
-  &.handholdHidden {
+  &.handhold-hidden {
     width: 10px;
     opacity: 0;
   }
 
-  &.handholdShown {
+  &.handhold-shown {
     width: 100%;
     opacity: 1;
     z-index: 10000;
   }
 
-  &.handholdSwipe {
+  &.handhold-swipe {
     will-change: transform;
     backface-visibility: hidden;
     width: 100%;
     z-index: 10000;
   }
 
-  &.handholdMove {
+  &.handhold-move {
     transition: opacity @animationDelay ease-out;
     width: 100%;
     z-index: 10000;
