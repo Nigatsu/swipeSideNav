@@ -237,10 +237,10 @@
   100% { transform: rotate(360deg); transform: rotate(360deg); }
 }
 
-home .container {
-  padding-top: 50px;
-}
 home .panel-body {
+  height: 200px;
+}
+about .panel-body {
   height: 200px;
 }
 manager header {
@@ -265,13 +265,13 @@ manager .menu-right {
   padding-left: 10px;
   padding-right: 10px;
 }
-.overflowHidden {
+.overflow-hidden {
   overflow: hidden;
 }
-.displayNone {
+.display-none {
   display: none;
 }
-.swipeNavDrawer {
+.swipe-nav-drawer {
   height: calc(100% + 100px);
   padding-bottom: 100px;
   position: fixed;
@@ -279,42 +279,42 @@ manager .menu-right {
   z-index: 9999;
   overflow-y: auto;
 }
-.swipeNavDrawer.drawerLeft {
+.swipe-nav-drawer.drawer-left {
   left: 0;
 }
-.swipeNavDrawer.drawerLeft.drawerHidden {
+.swipe-nav-drawer.drawer-left.drawer-hidden {
   transform: translateX(-100%);
   box-shadow: 0 0 0;
 }
-.swipeNavDrawer.drawerRight {
+.swipe-nav-drawer.drawer-right {
   right: 0;
 }
-.swipeNavDrawer.drawerRight.drawerHidden {
+.swipe-nav-drawer.drawer-right.drawer-hidden {
   transform: translateX(100%);
   box-shadow: 0 0 0;
 }
-.swipeNavDrawer.drawerShown {
+.swipe-nav-drawer.drawer-shown {
   transform: translateX(0);
   box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
   z-index: 10000;
 }
-.swipeNavDrawer.drawerShownFixed {
+.swipe-nav-drawer.drawer-shown-fixed {
   transform: translateX(0);
   box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
   z-index: 9999;
 }
-.swipeNavDrawer.drawerSwipe {
+.swipe-nav-drawer.drawer-swipe {
   will-change: transform;
   backface-visibility: hidden;
   box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
   z-index: 10000;
 }
-.swipeNavDrawer.drawerMove {
+.swipe-nav-drawer.drawer-move {
   transition: transform 200ms ease-out, box-shadow 200ms ease-out;
   box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
   z-index: 10000;
 }
-.swipeNavHandhold {
+.swipe-nav-handhold {
   background: rgba(0, 0, 0, 0.5);
   height: calc(100% + 100px);
   padding-bottom: 100px;
@@ -322,31 +322,34 @@ manager .menu-right {
   top: 0;
   z-index: 9999;
 }
-.swipeNavHandhold.handholdLeft {
+.swipe-nav-handhold.handhold-left {
   left: 0;
 }
-.swipeNavHandhold.handholdRight {
+.swipe-nav-handhold.handhold-right {
   right: 0;
 }
-.swipeNavHandhold.handholdHidden {
+.swipe-nav-handhold.handhold-hidden {
   width: 10px;
   opacity: 0;
 }
-.swipeNavHandhold.handholdShown {
+.swipe-nav-handhold.handhold-shown {
   width: 100%;
   opacity: 1;
   z-index: 10000;
 }
-.swipeNavHandhold.handholdSwipe {
+.swipe-nav-handhold.handhold-swipe {
   will-change: transform;
   backface-visibility: hidden;
   width: 100%;
   z-index: 10000;
 }
-.swipeNavHandhold.handholdMove {
+.swipe-nav-handhold.handhold-move {
   transition: opacity 200ms ease-out;
   width: 100%;
   z-index: 10000;
+}
+body {
+  padding-top: 50px;
 }
 @media (min-width: 768px) {
   .container {
